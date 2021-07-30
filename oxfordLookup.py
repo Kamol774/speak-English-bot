@@ -1,7 +1,8 @@
 import requests
+from settings import local_settings
 
-app_id = "62b446b5"
-app_key = "c2fe6960887f53b88999a767283d7e34"
+app_id = local_settings.APP_ID
+app_key = local_settings.APP_KEY
 language = "en-gb"
 
 
@@ -10,13 +11,13 @@ def getDefinitions(word_id):
     r = requests.get(url, headers={"app_id": app_id, "app_key": app_key})
     res = r.json()
     if 'error' in res.keys():
-        return print("Bunday so'z mavjud emas")
+        return False
 
     output={}
     definitions=[]
     for i in range(len(res['results'][0]['lexicalEntries'][0]['entries'][0]['senses'])):
         definitions.append(f"👉🏻{res['results'][0]['lexicalEntries'][0]['entries'][0]['senses'][i]['definitions']}")
-    output['definitions']=definitions
+    output['definitions']='\n'.join(definitions)
 
     if res['results'][0]['lexicalEntries'][0]['entries'][0]['pronunciations'][0].get('audioFile'):
         output['audio']=res['results'][0]['lexicalEntries'][0]['entries'][0]['pronunciations'][0]['audioFile']
